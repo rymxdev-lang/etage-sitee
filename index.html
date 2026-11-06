@@ -2063,33 +2063,24 @@
         <div class="foot-brand">
           <a href="#" class="brand">ÉTAGE</a>
           <p>Modern wardrobe essentials, made with intention. Designed in Algeria, crafted across Europe and Japan.</p>
-       
         </div>
         <div class="foot-col">
           <h5>Shop</h5>
           <ul>
-            <li><a href="#">New Arrivals</a></li>
-            <li><a href="#">Women</a></li>
-            <li><a href="#">Men</a></li>
-            <li><a href="#">Accessories</a></li>
+            <li><a href="#shop" class="footer-link" data-filter="all">New Arrivals</a></li>
+            <li><a href="#shop" class="footer-link" data-filter="women">Women</a></li>
+            <li><a href="#shop" class="footer-link" data-filter="men">Men</a></li>
+            <li><a href="#shop" class="footer-link" data-filter="unisex">Accessories</a></li>
           </ul>
         </div>
-        <div class="foot-col">
-          <h5>Support</h5>
-          <ul>
-            <li><a href="#">Shipping</a></li>
-            <li><a href="#">Returns</a></li>
-            <li><a href="#">Repairs</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
+   
         <div class="foot-col">
           <h5>About</h5>
           <ul>
-            <li><a href="#">Our Story</a></li>
-            <li><a href="#">Journal</a></li>
-            <li><a href="#">Sustainability</a></li>
-            <li><a href="#">Careers</a></li>
+            <li><a href="#story">Our Story</a></li>
+            <li><a href="#" class="coming-soon">Journal</a></li>
+            <li><a href="#" class="coming-soon">Sustainability</a></li>
+            <li><a href="#" class="coming-soon">Careers</a></li>
           </ul>
         </div>
       </div>
@@ -2320,36 +2311,61 @@
     })();
 
     // ============================================================
-    // CATEGORY FILTERING
+    // FILTERING (Nav + Footer)
     // ============================================================
     const navLinks = document.querySelectorAll('.nav-link[data-filter]');
+    const footerLinks = document.querySelectorAll('.footer-link[data-filter]');
     const products = document.querySelectorAll('.product');
+
+    function applyFilter(filter) {
+      // Update nav active state if it was triggered from nav
+      navLinks.forEach(l => {
+        if (l.dataset.filter === filter) {
+          l.classList.add('active');
+        } else {
+          l.classList.remove('active');
+        }
+      });
+
+      // Filter products
+      products.forEach(product => {
+        if (filter === 'all') {
+          product.classList.remove('hide');
+        } else {
+          if (product.dataset.gender === filter || (filter === 'unisex' && product.dataset.gender === 'unisex')) {
+            product.classList.remove('hide');
+          } else {
+            product.classList.add('hide');
+          }
+        }
+      });
+
+      // Smooth scroll to shop section
+      document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+    }
 
     navLinks.forEach(link => {
       link.addEventListener('click', (e) => {
         e.preventDefault();
-        
-        // Manage active state
-        navLinks.forEach(l => l.classList.remove('active'));
-        link.classList.add('active');
+        applyFilter(link.dataset.filter);
+      });
+    });
 
-        const filter = link.dataset.filter;
+    footerLinks.forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        applyFilter(link.dataset.filter);
+      });
+    });
 
-        // Filter products
-        products.forEach(product => {
-          if (filter === 'all') {
-            product.classList.remove('hide');
-          } else {
-            if (product.dataset.gender === filter || product.dataset.gender === 'unisex') {
-              product.classList.remove('hide');
-            } else {
-              product.classList.add('hide');
-            }
-          }
-        });
-
-        // Smooth scroll to shop section
-        document.getElementById('shop').scrollIntoView({ behavior: 'smooth' });
+    // ============================================================
+    // COMING SOON (footer links without pages)
+    // ============================================================
+    document.querySelectorAll('.coming-soon').forEach(link => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const pageName = link.textContent.trim();
+        alert(`${pageName} — Coming soon.`);
       });
     });
 
